@@ -28,35 +28,40 @@ During natural disasters and humanitarian crises (floods, cyclones, earthquakes,
 
 ```mermaid
 flowchart TB
-    subgraph Client Tier
+    subgraph CLIENT["Client Tier"]
         PWA["Citizen & Responder PWA (Offline-capable)"]
         DASH["Operations Dashboard"]
     end
 
-    subgraph Edge & Security Tier
+    subgraph EDGE["Edge & Security Tier"]
         CF["Amazon CloudFront CDN"]
         WAF["AWS WAF (Rate Limiting & DDoS Guard)"]
         COG["Amazon Cognito (User Pool & RBAC)"]
     end
 
-    subgraph Compute & API Tier
+    subgraph COMPUTE["Compute & API Tier"]
         ALB["Application Load Balancer"]
         API["FastAPI App (Amazon ECS Fargate)"]
     end
 
-    subgraph Messaging & Worker Tier
+    subgraph WORKERS["Messaging & Worker Tier"]
         SQS["Amazon SQS + DLQ (Case Processing)"]
         WORKER["Worker Service (Amazon ECS Fargate)"]
         BEDROCK["Amazon Bedrock (Strands AI Agent)"]
     end
 
-    subgraph Data & Storage Tier
+    subgraph STORAGE["Data & Storage Tier"]
         DDB["Amazon DynamoDB (Cases, People, Responders, Shelters, Audits)"]
         S3["Amazon S3 (Evidence Media with Presigned URLs)"]
     end
 
-    Client Tier --> CF --> WAF --> ALB --> API
-    Client Tier -. Auth .-> COG
+    PWA --> CF
+    DASH --> CF
+    CF --> WAF
+    WAF --> ALB
+    ALB --> API
+    PWA -. "Auth" .-> COG
+    DASH -. "Auth" .-> COG
     API --> DDB
     API --> S3
     API --> SQS

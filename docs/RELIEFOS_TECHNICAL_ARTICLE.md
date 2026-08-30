@@ -67,35 +67,40 @@ The architecture is built on AWS serverless and container services, keeping case
 
 ```mermaid
 flowchart TB
-    subgraph Client Tier
+    subgraph CLIENT["Client Tier"]
         PWA["Citizen & Responder PWA (Offline-capable)"]
         DASH["Operations Dashboard (Incident Command)"]
     end
 
-    subgraph Edge & Security Tier
+    subgraph EDGE["Edge & Security Tier"]
         CF["Amazon CloudFront CDN"]
         WAF["AWS WAF (Rate-limiting & DDoS mitigation)"]
         COG["Amazon Cognito (RBAC & User Pools)"]
     end
 
-    subgraph Compute & Ingestion Tier
+    subgraph COMPUTE["Compute & Ingestion Tier"]
         ALB["Application Load Balancer"]
         API["FastAPI Backend (Amazon ECS Fargate)"]
     end
 
-    subgraph Asynchronous Worker Tier
+    subgraph WORKERS["Asynchronous Worker Tier"]
         SQS["Amazon SQS + Dead-Letter Queue (DLQ)"]
         WORKER["Triage & Media Worker (Amazon ECS Fargate)"]
         BEDROCK["Amazon Bedrock (Strands Agents Framework)"]
     end
 
-    subgraph Storage & Evidence Tier
+    subgraph STORAGE["Storage & Evidence Tier"]
         DDB["Amazon DynamoDB (Cases, Responders, Shelters, Audits)"]
         S3["Amazon S3 (Encrypted Photos, Videos, Audio)"]
     end
 
-    Client Tier --> CF --> WAF --> ALB --> API
-    Client Tier -. Auth .-> COG
+    PWA --> CF
+    DASH --> CF
+    CF --> WAF
+    WAF --> ALB
+    ALB --> API
+    PWA -. "Auth" .-> COG
+    DASH -. "Auth" .-> COG
     API --> DDB
     API --> S3
     API --> SQS
