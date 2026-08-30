@@ -14,10 +14,6 @@ authors = [
   { name = "ReliefOS contributors" }
 ]
 
-[project.urls]
-"Homepage" = "https://chandrachood.in"
-"LinkedIn" = "https://www.linkedin.com/in/chandrachoodraveendran"
-"Repository" = "https://github.com/chandrachood/ReliefOS.git"
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Framework :: FastAPI",
@@ -35,6 +31,11 @@ dependencies = [
   "strands-agents>=1.0,<2",
   "uvicorn[standard]>=0.34,<1",
 ]
+
+[project.urls]
+"Homepage" = "https://chandrachood.in"
+"LinkedIn" = "https://www.linkedin.com/in/chandrachoodraveendran"
+"Repository" = "https://github.com/chandrachood/ReliefOS.git"
 
 [project.optional-dependencies]
 dev = [
