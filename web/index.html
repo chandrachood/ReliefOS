@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f97316" />
+    <meta name="description" content="ReliefOS disaster reporting and rescue coordination" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIINfQ3ynI8hZpVjMZK8Q+Hq9vxaKjbU4uQ=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>ReliefOS — Disaster Response</title>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#report" aria-label="ReliefOS home">
+        <span class="brand-mark">S</span>
+        <span><strong>ReliefOS</strong><small>Disaster Response</small></span>
+      </a>
+      <div class="network" id="networkStatus" role="status">Checking connection…</div>
+    </header>
+
+    <nav class="tabs" aria-label="Primary navigation">
+      <button class="tab active" data-view="report">Get help</button>
+      <button class="tab" data-view="people">Find people</button>
+      <button class="tab" data-view="shelters">Shelters</button>
+      <button class="tab" data-view="responders">Offer help</button>
+      <button class="tab" data-view="operations">Operations</button>
+    </nav>
+
+    <main>
+      <section class="view active" id="view-report">
+        <div class="hero">
+          <div>
+            <p class="eyebrow">Emergency reporting</p>
+            <h1>Tell rescuers who needs help and where.</h1>
+            <p>Submit the essential facts first. Photos and video upload after your case is saved.</p>
+          </div>
+          <div class="emergency-note">
+            <strong>Immediate danger?</strong>
+            <span>Call the official emergency number when a phone network is available.</span>
+          </div>
+        </div>
+
+        <form id="caseForm" class="panel form-grid">
+          <label>
+            Situation
+            <select name="case_type" required>
+              <option value="trapped">People trapped</option>
+              <option value="injured">Injury or medical emergency</option>
+              <option value="stranded">Stranded or isolated</option>
+              <option value="missing">Missing person</option>
+              <option value="supply_request">Food, water or medicine</option>
+              <option value="infrastructure_hazard">Dangerous infrastructure</option>
+              <option value="deceased_recovery">Suspected deceased-person recovery</option>
+            </select>
+          </label>
+          <label>
+            Number of affected people
+            <input name="affected_people_count" type="number" min="1" max="10000" value="1" required />
+          </label>
+          <label class="wide">
+            Describe what is happening
+            <textarea name="description" maxlength="4000" required placeholder="Example: Three people are trapped on the first floor. Water is rising."></textarea>
+          </label>
+
+          <fieldset class="wide">
+            <legend>Immediate danger indicators</legend>
+            <div class="check-grid" id="dangerOptions">
+              <label><input type="checkbox" value="cannot_breathe" /> Cannot breathe</label>
+              <label><input type="checkbox" value="unconscious" /> Unconscious</label>
+              <label><input type="checkbox" value="severe_bleeding" /> Severe bleeding</label>
+              <label><input type="checkbox" value="rising_water" /> Rising water</label>
+              <label><input type="checkbox" value="active_fire" /> Active fire</label>
+              <label><input type="checkbox" value="structural_collapse" /> Building collapse</label>
+              <label><input type="checkbox" value="people_trapped" /> People trapped</label>
+              <label><input type="checkbox" value="immobile" /> Unable to move</label>
+            </div>
+          </fieldset>
+
+          <fieldset class="wide">
+            <legend>Help required</legend>
+            <div class="check-grid" id="assistanceOptions">
+              <label><input type="checkbox" value="rescue" /> Rescue</label>
+              <label><input type="checkbox" value="medical" /> Medical</label>
+              <label><input type="checkbox" value="evacuation" /> Evacuation</label>
+              <label><input type="checkbox" value="boat" /> Boat</label>
+              <label><input type="checkbox" value="food" /> Food</label>
+              <label><input type="checkbox" value="water" /> Drinking water</label>
+              <label><input type="checkbox" value="medicine" /> Medicine</label>
+              <label><input type="checkbox" value="shelter" /> Shelter</label>
+            </div>
+          </fieldset>
+
+          <div class="location-card wide">
+            <div>
+              <strong>Your location</strong>
+              <p id="locationMessage">Use GPS or describe the location manually.</p>
+            </div>
+            <button type="button" class="secondary" id="gpsButton">Use my GPS</button>
+            <input type="hidden" name="latitude" />
+            <input type="hidden" name="longitude" />
+            <input type="hidden" name="gps_accuracy_meters" />
+          </div>
+          <label class="wide">
+            Location description
+            <input name="location_description" maxlength="500" placeholder="Landmark, street, village, building or nearby feature" />
+          </label>
+          <label>
+            Your name
+            <input name="reporter_name" maxlength="120" autocomplete="name" />
+          </label>
+          <label>
+            Reachable phone number
+            <input name="reporter_phone" maxlength="32" inputmode="tel" autocomplete="tel" />
+          </label>
+          <label>
+            Preferred language
+            <select name="preferred_language">
+              <option value="en-IN">English</option>
+              <option value="ml-IN">Malayalam</option>
+              <option value="hi-IN">Hindi</option>
+              <option value="ta-IN">Tamil</option>
+            </select>
+          </label>
+          <label>
+            Photo, short video or audio
+            <input name="media" type="file" accept="image/*,video/*,audio/*" />
+          </label>
+          <div class="wide form-actions">
+            <button type="submit" class="primary" id="submitCase">Create emergency case</button>
+            <p class="privacy">Sensitive reports are restricted. AI provides recommendations only; authorized responders make decisions.</p>
+          </div>
+        </form>
+        <div id="caseResult" class="result hidden" role="status"></div>
+        <div id="queuedReports" class="panel hidden"></div>
+      </section>
+
+      <section class="view" id="view-people">
+        <div class="section-heading">
+          <div><p class="eyebrow">Family assistance</p><h2>Find or report a person</h2></div>
+          <p>Search results deliberately hide exact location, phone numbers and sensitive evidence.</p>
+        </div>
+        <div class="two-column">
+          <form id="personSearchForm" class="panel">
+            <h3>Search public-safe records</h3>
+            <label>Name, phone, person ID or case ID<input name="query" minlength="2" required /></label>
+            <button class="primary" type="submit">Search</button>
+            <div id="personResults" class="cards"></div>
+          </form>
+          <form id="personReportForm" class="panel">
+            <h3>Report a person</h3>
+            <label>Full name<input name="full_name" required maxlength="160" /></label>
+            <label>Approximate age<input name="approximate_age" type="number" min="0" max="130" /></label>
+            <label>Status
+              <select name="status">
+                <option value="missing">Missing</option>
+                <option value="safe">Safe</option>
+                <option value="stranded">Stranded</option>
+                <option value="located">Located</option>
+                <option value="hospitalized">Hospitalized</option>
+                <option value="at_shelter">At shelter</option>
+              </select>
+            </label>
+            <label>Last confirmed area<input name="last_confirmed_area" maxlength="300" /></label>
+            <label>Phone, if known<input name="phone" maxlength="32" /></label>
+            <label>Related case ID<input name="case_id" maxlength="100" /></label>
+            <button class="primary" type="submit">Submit person report</button>
+            <div id="personReportResult" class="inline-result"></div>
+          </form>
+        </div>
+      </section>
+
+      <section class="view" id="view-shelters">
+        <div class="section-heading">
+          <div><p class="eyebrow">Safe locations</p><h2>Nearby government shelters</h2></div>
+          <p>A suggested route does not prove that every road or bridge is safe.</p>
+        </div>
+        <form id="shelterForm" class="panel compact-form">
+          <label>Latitude<input name="latitude" type="number" step="any" required /></label>
+          <label>Longitude<input name="longitude" type="number" step="any" required /></label>
+          <label>Radius in km<input name="radius_km" type="number" min="1" max="500" value="50" /></label>
+          <button type="button" class="secondary" id="shelterGps">Use my GPS</button>
+          <button type="submit" class="primary">Find shelters</button>
+        </form>
+        <div id="shelterResults" class="cards grid-cards"></div>
+      </section>
+
+      <section class="view" id="view-responders">
+        <div class="section-heading">
+          <div><p class="eyebrow">Verified assistance network</p><h2>Register to offer help</h2></div>
+          <p>Registration does not authorize deployment. A coordinator must verify and approve every responder.</p>
+        </div>
+        <form id="responderForm" class="panel form-grid">
+          <label>Name or team name<input name="name" required maxlength="160" /></label>
+          <label>Agency or organisation<input name="agency" maxlength="160" /></label>
+          <label>Responder type
+            <select name="responder_type">
+              <option value="rescue_team">Rescue team</option>
+              <option value="medical_professional">Medical professional</option>
+              <option value="shelter_team">Shelter team</option>
+            </select>
+          </label>
+          <label>Phone<input name="phone" maxlength="32" /></label>
+          <label class="wide">Capabilities, separated by commas<input name="capabilities" placeholder="boat, medical, rope rescue, evacuation transport" /></label>
+          <button type="submit" class="primary">Register for verification</button>
+          <div id="responderResult" class="inline-result"></div>
+        </form>
+      </section>
+
+      <section class="view" id="view-operations">
+        <div class="operations-heading">
+          <div><p class="eyebrow">Government command</p><h2>Operations dashboard</h2></div>
+          <div class="development-badge">Local development role</div>
+          <button class="primary" id="refreshOperations">Refresh cases</button>
+        </div>
+        <div class="metric-row" id="metrics"></div>
+        <div class="operations-grid">
+          <div id="caseMap" aria-label="Map of open cases"></div>
+          <div>
+            <div class="filter-row">
+              <label>Status
+                <select id="statusFilter">
+                  <option value="">All open cases</option>
+                  <option value="received">Received</option>
+                  <option value="verified">Verified</option>
+                  <option value="team_assigned">Team assigned</option>
+                  <option value="team_en_route">Team en route</option>
+                  <option value="closed">Closed</option>
+                </select>
+              </label>
+            </div>
+            <div id="operationsCases" class="case-list"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>ReliefOS open-source MVP</span>
+      <a href="/docs">API documentation</a>
+      <span>Not a replacement for official emergency numbers</span>
+    </footer>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
+    <script src="app.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      APP_ENV: development
+      AUTH_MODE: local
+      STORAGE_BACKEND: memory
+      CASE_ACCESS_SECRET: compose-development-secret
+    volumes:
+      - reliefos_media:/opt/reliefos/runtime/media
+
+  dynamodb:
+    image: amazon/dynamodb-local:latest
+    profiles: ["dynamodb"]
+    command: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-inMemory"]
+    ports:
+      - "8001:8000"
+
+volumes:
+  reliefos_media:

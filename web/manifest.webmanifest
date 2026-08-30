@@ -1,0 +1,10 @@
+{
+  "name": "ReliefOS Disaster Response",
+  "short_name": "ReliefOS",
+  "description": "Disaster reporting and rescue coordination",
+  "start_url": "/portal/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#f97316",
+  "icons": []
+}

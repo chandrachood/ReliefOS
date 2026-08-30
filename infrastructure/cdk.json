@@ -1,0 +1,9 @@
+{
+  "app": "python app.py",
+  "context": {
+    "auth_mode": "cognito",
+    "ai_triage_enabled": "false",
+    "bedrock_model_id": ""
+  }
+}
+
