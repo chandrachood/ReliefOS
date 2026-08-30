@@ -206,6 +206,7 @@ cdk deploy
 The default CDK deployment is a **demonstration environment**, not production. Review costs,
 configure Cognito sign-in, add the WAF web ACL, use a production secret, establish backup and
 retention policies, and complete the controls in [`docs/production-readiness.md`](docs/production-readiness.md).
+For complete specifications, see the [Product Requirements Document (PRD)](docs/PRD.md).
 
 ## Repository structure
 
@@ -215,7 +216,7 @@ web/             Mobile-first PWA and operations dashboard
 tests/           Unit and API workflow tests
 infrastructure/  AWS CDK deployment
 scripts/         Local development helpers
-docs/            Architecture and production-readiness notes
+docs/            PRD, Architecture, and production-readiness notes
 ```
 
 ## Creator & Maintainer
