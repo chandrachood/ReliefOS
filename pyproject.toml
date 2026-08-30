@@ -43,6 +43,7 @@ packages = ["app"]
 [tool.pytest.ini_options]
 addopts = "-q --disable-warnings --strict-markers"
 testpaths = ["tests"]
+pythonpath = ["."]
 
 [tool.ruff]
 line-length = 100
