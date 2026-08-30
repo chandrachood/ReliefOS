@@ -3,7 +3,7 @@
 **Open-source, AI-assisted disaster reporting and rescue coordination on AWS.**
 
 [![Creator](https://img.shields.io/badge/Creator-Chandrachood%20Raveendran-blue?style=flat-square&logo=linkedin)](https://www.linkedin.com/in/chandrachoodraveendran)
-[![Websphere](https://img.shields.io/badge/Websphere-chandrachood.in-purple?style=flat-square)](https://chandrachood.in)
+[![Website](https://img.shields.io/badge/Website-chandrachood.in-purple?style=flat-square)](https://chandrachood.in)
 [![License](https://img.shields.io/badge/License-Apache_2.0-green.svg?style=flat-square)](LICENSE)
 
 > [!WARNING]
@@ -222,7 +222,7 @@ docs/            Architecture and production-readiness notes
 
 **Chandrachood Raveendran**
 
-- **Website / Websphere:** [chandrachood.in](https://chandrachood.in)
+- **Website:** [chandrachood.in](https://chandrachood.in)
 - **LinkedIn:** [linkedin.com/in/chandrachoodraveendran](https://www.linkedin.com/in/chandrachoodraveendran)
 - **GitHub:** [@chandrachood](https://github.com/chandrachood)
 
