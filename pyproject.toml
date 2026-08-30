@@ -9,7 +9,15 @@ description = "Open-source, AI-assisted disaster reporting and rescue coordinati
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Apache-2.0" }
-authors = [{ name = "ReliefOS contributors" }]
+authors = [
+  { name = "Chandrachood Raveendran" },
+  { name = "ReliefOS contributors" }
+]
+
+[project.urls]
+"Homepage" = "https://chandrachood.in"
+"LinkedIn" = "https://www.linkedin.com/in/chandrachoodraveendran"
+"Repository" = "https://github.com/chandrachood/ReliefOS.git"
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Framework :: FastAPI",
